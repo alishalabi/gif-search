@@ -1,3 +1,5 @@
+var giphy = require('giphy-api')();
+
 var express = require('express');
 var app = express();
 
@@ -11,11 +13,18 @@ app.get('/hello-world', function (req, res) {
   res.send('Hello World');
 });
 
+app.use(express.static('public'));
 
 app.listen(3000, function () {
   console.log('Gif Search listening on port localhost:3000!');
 });
 
+var http = require('http');
+
 app.get('/', function (req, res) {
-  res.render('home')
-})
+  giphy.search(req.query.term, function (err, response) {
+    res.render('home', {gifs: response.data})
+  });
+});
+
+app.use(express.static('public'));
